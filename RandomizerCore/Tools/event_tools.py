@@ -1,5 +1,7 @@
 import evfl
 
+from RandomizerCore.Randomizers import data
+
 idgen = evfl.util.IdGenerator()
 
 
@@ -10,7 +12,7 @@ def invertList(l):
 
 def readFlow(evflFile):
 	"""Reads the flow from the eventflow file and returns it"""
-	
+
 	flow = evfl.EventFlow()
 	with open(evflFile, 'rb') as file:
 		flow.read(file.read())
@@ -77,7 +79,7 @@ def addEntryPoint(flowchart, name):
 
 
 def insertEventAfter(flowchart, previous, new):
-	"""Change the previous event or entry point to have {new} be the next event 
+	"""Change the previous event or entry point to have {new} be the next event
 	{previous} is the name of the event/entry point, {new} is the name of the event to add 
 	Return True if any event or entry point was modified and False if not"""
 
@@ -139,11 +141,11 @@ def insertActionChain(flowchart, before, events):
 
 
 def createActionChain(flowchart, before, eventDefs, after=None):
-	"""Create a series of action events in order after {before} and followed by {after} 
+	"""Create a series of action events in order after {before} and followed by {after}
 	Return the name of the first event in the chain"""
 	if len(eventDefs) == 0:
 		return
-	
+
 	next = after if len(eventDefs) == 1 else None
 	first = createActionEvent(flowchart, eventDefs[0][0], eventDefs[0][1], eventDefs[0][2], next)
 	current = first
@@ -168,9 +170,16 @@ def createProgressiveItemSwitch(flowchart, item1, item2, flag, before=None, afte
 
 	item2GetSeqEvent = createActionEvent(flowchart, 'Link', 'GenericItemGetSequenceByKey',
 		{'itemKey': item2, 'keepCarry': False, 'messageEntry': ''}, after)
-	item2AddEvent = createActionEvent(flowchart, 'Inventory', 'AddItemByKey',
-		{'itemKey': item2, 'count': 1, 'index': -1, 'autoEquip': False}, item2GetSeqEvent)
-	
+
+	if item2 == 'SwordLv2':
+		item2AddEvent = createActionChain(flowchart, None, [
+			('Inventory', 'AddItemByKey', {'itemKey': item2, 'count': 1, 'index': -1, 'autoEquip': False}),
+			('EventFlags', 'SetFlag', {'symbol': data.SWORD2_FOUND_FLAG, 'value': True})
+		], item2GetSeqEvent)
+	else:
+		item2AddEvent = createActionEvent(flowchart, 'Inventory', 'AddItemByKey',
+			{'itemKey': item2, 'count': 1, 'index': -1, 'autoEquip': False}, item2GetSeqEvent)
+
 	flagSetEvent = createActionEvent(flowchart, 'EventFlags', 'SetFlag',
 		{'symbol': flag, 'value': True}, item1AddEvent)
 	flagCheckEvent = createSwitchEvent(flowchart, 'EventFlags', 'CheckFlag',
@@ -182,7 +191,7 @@ def createProgressiveItemSwitch(flowchart, item1, item2, flag, before=None, afte
 
 
 def createActionEvent(flowchart, actor, action, params, nextev=None):
-	"""Creates a new action event. {actor} and {action} should be strings, {params} should be a dict 
+	"""Creates a new action event. {actor} and {action} should be strings, {params} should be a dict
 	{nextev} is the name of the next event"""
 	nextEvent = findEvent(flowchart, nextev)
 
@@ -192,7 +201,7 @@ def createActionEvent(flowchart, actor, action, params, nextev=None):
 		act = evfl.ActorIdentifier(names[0], names[1])
 	else:
 		act = evfl.ActorIdentifier(actor)
-	
+
 	new = evfl.event.Event()
 	new.data = evfl.event.ActionEvent()
 	new.data.actor = evfl.util.make_rindex(flowchart.find_actor(act))
@@ -212,7 +221,7 @@ def createActionEvent(flowchart, actor, action, params, nextev=None):
 
 
 def createSwitchEvent(flowchart, actor, query, params, cases):
-	"""Creates a new switch event and adds it to the flowchart 
+	"""Creates a new switch event and adds it to the flowchart
 	{actor} and {query} should be strings, {params} should be a dict, {cases} is a dict if {int: event name}"""
 
 	new = evfl.event.Event()
@@ -239,7 +248,7 @@ def createSwitchEvent(flowchart, actor, query, params, cases):
 
 
 def createSubFlowEvent(flowchart, refChart, entryPoint, params, nextev=None):
-	"""Creates a new subflow event and insert it into the flow 
+	"""Creates a new subflow event and insert it into the flow
 	{nextev} is the name of the next event"""
 
 	nextEvent = findEvent(flowchart, nextev)
@@ -271,7 +280,7 @@ def createForkEvent(flowchart, before, forks, nextev=None):
 	new.data.join.set_index(invertList(flowchart.events))
 
 	flowchart.add_event(new, idgen)
-	
+
 	if before != None:
 		insertEventAfter(flowchart, before, new.name)
 
@@ -332,5 +341,5 @@ def addForkEventForks(flowchart, forkevent, forks):
 			fork = evfl.util.make_rindex(ev)
 			fork.set_index(invertList(flowchart.events))
 			forkEvents.append(fork)
-	
+
 	forkEvent.data.forks = forkEvents

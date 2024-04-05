@@ -367,6 +367,12 @@ def insertItemWithoutAnimation(item, index):
             ('EventFlags', 'SetFlag', {'symbol': data.SWORD_FOUND_FLAG, 'value': True}),
             ('Inventory', 'AddItemByKey', {'itemKey': item, 'count': 1, 'index': index, 'autoEquip': False})
         ]
+
+    if item == 'SwordLv2':
+        return [
+            ('EventFlags', 'SetFlag', {'symbol': data.SWORD2_FOUND_FLAG, 'value': True}),
+            ('Inventory', 'AddItemByKey', {'itemKey': item, 'count': 1, 'index': index, 'autoEquip': False})
+        ]
     
     if item == 'Shield':
         return [
@@ -499,8 +505,10 @@ def insertDampeItemGet(flowchart, item, index, after=None):
             {'symbol': data.BRACELET_FOUND_FLAG}, {0: give_bracelet1, 1: give_bracelet2})
 
     if item == 'SwordLv1':
-        give_sword2 = event_tools.createActionEvent(flowchart, 'Inventory', 'AddItemByKey',
-            {'itemKey': 'SwordLv2', 'count': 1, 'index': -1, 'autoEquip': False}, after)
+        give_sword2 = event_tools.createActionChain(flowchart, None, [
+            ('EventFlags', 'SetFlag', {'symbol': data.SWORD2_FOUND_FLAG, 'value': True}),
+            ('Inventory', 'AddItemByKey', {'itemKey': 'SwordLv2', 'count': 1, 'index': -1, 'autoEquip': False})
+        ], after)
         give_sword1 = event_tools.createActionChain(flowchart, None, [
             ('EventFlags', 'SetFlag', {'symbol': data.SWORD_FOUND_FLAG, 'value': True}),
             ('Inventory', 'AddItemByKey', {'itemKey': item, 'count': 1, 'index': -1, 'autoEquip': False})

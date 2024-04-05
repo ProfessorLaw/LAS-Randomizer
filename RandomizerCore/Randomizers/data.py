@@ -1,4 +1,5 @@
 SWORD_FOUND_FLAG        = 'unused0357'
+SWORD2_FOUND_FLAG       = 'unused0713'
 SHIELD_FOUND_FLAG       = 'unused0358'
 BRACELET_FOUND_FLAG     = 'unused0359'
 LENS_FOUND_FLAG         = 'unused0360'
