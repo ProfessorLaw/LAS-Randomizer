@@ -1296,7 +1296,34 @@ class ModsProcess(QtCore.QThread):
             crane_prizes.makeEventChanges(flow.flowchart, self.settings)
             self.writeModFile(f'{self.romfs_dir}/region_common/event', 'PrizeCommon.bfevfl', flow)
 
+        ### Area : Preventing a softlock when going in taltal-sunken-grotto without flippers
+        if self.thread_active:
+            flow = event_tools.readFlow(f'{self.rom_path}/region_common/event/Area.bfevfl')
+            actors.addNeededActors(flow.flowchart, self.rom_path)
+            field_tp = event_tools.createActionEvent(flow.flowchart, 'GameControl', 'RequestLevelJump',
+                                                     {'level': 'Field',
+                                                      'locator': 'Field_02N_b',
+                                                      'offsetX': 0.0, 'offsetZ': 0.0},
+                                                     None)
 
+            has_flipper_check = event_tools.createSwitchEvent(
+                flow.flowchart,
+                'Inventory',
+                'HasItem',
+                {'count': 1, 'itemType': 21},
+                {0: field_tp, 1: 'Event109'}
+            )
+
+            is_sunken_grotto = event_tools.createSwitchEvent(
+                flow.flowchart,
+                'FlowControl',
+                'CompareString',
+                {'value1': event_tools.findEvent(flow.flowchart, 'Event109').data.params.data['level'], 'value2': 'EagleTowerExit'},
+                {0: has_flipper_check, 1: 'Event109'}
+            )
+
+            event_tools.insertEventAfter(flow.flowchart, 'Event211', is_sunken_grotto)
+            self.writeModFile(f'{self.romfs_dir}/region_common/event', 'Area.bfevfl', flow)
 
     def makeGeneralDatasheetChanges(self):
         """Make changes to some datasheets that are general in nature and not tied to specific item placements"""
