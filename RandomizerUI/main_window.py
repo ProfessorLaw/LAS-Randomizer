@@ -2,7 +2,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from RandomizerUI.UI.ui_form import Ui_MainWindow
 from RandomizerUI.progress_window import ProgressWindow
 from RandomizerUI.update import UpdateProcess, LogicUpdateProcess
-from RandomizerCore.Data.randomizer_data import *
+from RandomizerCore.randomizer_data import *
 from re import sub
 
 import os
@@ -34,12 +34,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.starting_gear = list()
         self.overworld_owls = bool(False)
         self.dungeon_owls = bool(False)
-        
+
         # Load User Settings
         self.applyDefaults()
         if not DEFAULTS:
             settings_manager.loadSettings(self)
-        
+
         self.updateOwls()
         self.updateSeashells()
 
@@ -55,6 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionDark.triggered.connect(self.setDarkMode)
         self.ui.actionChangelog.triggered.connect(self.showChangelog)
         self.ui.actionKnown_Issues.triggered.connect(self.showIssues)
+        self.ui.actionHelpful_Tips.triggered.connect(self.showTips)
         self.ui.actionHelp.triggered.connect(self.showInfo)
         self.ui.browseButton1.clicked.connect(self.romBrowse)
         self.ui.browseButton2.clicked.connect(self.outBrowse)
@@ -70,6 +71,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.trapsComboBox.currentIndexChanged.connect(self.updateSettingsString)
         self.ui.instrumentsComboBox.currentIndexChanged.connect(self.updateSettingsString)
         self.ui.tricksComboBox.currentIndexChanged.connect(self.updateSettingsString)
+        self.ui.stealingComboBox.currentIndexChanged.connect(self.updateSettingsString)
+        self.ui.chestAspectComboBox.currentIndexChanged.connect(self.updateSettingsString)
         self.ui.rupeesSpinBox.valueChanged.connect(self.updateSettingsString)
         self.ui.tabWidget.currentChanged.connect(self.tab_Changed)
         self.ui.includeButton.clicked.connect(self.includeButton_Clicked)
@@ -86,7 +89,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if isinstance(widget, QtWidgets.QCheckBox):
                 widget.clicked.connect(self.checkClicked)
                 widget.installEventFilter(self)
-        
+
         ### DESCRIPTIONS
         desc_items = [
             self.ui.seashellsComboBox,
@@ -95,7 +98,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.owlsComboBox,
             self.ui.platformComboBox,
             self.ui.rupeesSpinBox,
-            self.ui.trapsComboBox
+            self.ui.trapsComboBox,
+            self.ui.chestAspectComboBox,
+            self.ui.dungeonItemsComboBox,
+            self.ui.stealingComboBox
         ]
         for item in desc_items:
             item.installEventFilter(self)
@@ -134,8 +140,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.instrumentsComboBox,
             self.ui.owlsComboBox,
             self.ui.platformComboBox,
-            self.ui.trapsComboBox
+            self.ui.trapsComboBox,
+            self.ui.chestAspectComboBox,
+            self.ui.dungeonItemsComboBox
         ]
+
         for combo in combos:
             combo.__class__ = SmartComboBox
             combo.popup_closed.connect(self.closeComboBox)
@@ -248,7 +257,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if os.path.exists(folder_path):
             self.ui.lineEdit_2.setText(folder_path)
     
-    
+
     def generateSeed(self):
         adj1 = random.choice(ADJECTIVES)
         adj2 = random.choice(ADJECTIVES)
@@ -259,7 +268,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def checkClicked(self, checked):
         if self.current_option not in settings_manager.CHECK_LOCATIONS:
             return
-        
+
         if self.current_option == 'rapidsCheck':
             if checked:
                 self.excluded_checks.difference_update(RAPIDS_REWARDS)
@@ -276,7 +285,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.excluded_checks.difference_update(locs)
             else:
                 self.excluded_checks.update(locs)
-        
+
         self.updateSettingsString()
 
 
@@ -299,9 +308,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.excluded_checks.update(['50-seashell-reward'])
         else:
             self.excluded_checks.difference_update(SEASHELL_REWARDS)
-        
+
         self.updateSettingsString()
-    
+
 
     def updateOwls(self):
         value = self.ui.owlsComboBox.currentIndex()
@@ -325,7 +334,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         if value in [1, 3] and not self.ui.rapidsCheck.isChecked():
             self.excluded_checks.update(['owl-statue-rapids'])
-        
+
         self.updateSettingsString()
 
 
@@ -371,9 +380,9 @@ class MainWindow(QtWidgets.QMainWindow):
         
         # load mod settings from the UI, no need to decode settings string
         settings = settings_manager.loadRandomizerSettings(self, seed)
-        
+        settings_string = self.ui.lineEdit_4.text()
         outdir = f"{self.ui.lineEdit_2.text()}/{settings['seed']}"
-        self.progress_window = ProgressWindow(rom_path, outdir, ITEM_DEFS, logic_defs, settings)
+        self.progress_window = ProgressWindow(rom_path, outdir, ITEM_DEFS, logic_defs, settings, settings_string)
         self.progress_window.setFixedSize(472, 125)
         self.progress_window.setWindowTitle(f"{settings['seed']}")
 
@@ -428,23 +437,23 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.tabWidget.currentIndex() == 3:
             return
     
-    
+
     def includeButton_Clicked(self):
         for i in self.ui.listWidget_2.selectedItems():
             self.ui.listWidget_2.takeItem(self.ui.listWidget_2.row(i))
             self.excluded_checks.remove(self.listToCheck(i.text()))
             self.ui.listWidget.addItem(SmartListWidget(i.text()))
         self.updateSettingsString()
-    
-    
+
+
     def excludeButton_Clicked(self):
         for i in self.ui.listWidget.selectedItems():
             self.ui.listWidget.takeItem(self.ui.listWidget.row(i))
             self.ui.listWidget_2.addItem(SmartListWidget(i.text()))
             self.excluded_checks.add(self.listToCheck(i.text()))
         self.updateSettingsString()
-    
-    
+
+
     def includeButton_3_Clicked(self):
         for i in self.ui.listWidget_6.selectedItems():
             self.ui.listWidget_6.takeItem(self.ui.listWidget_6.row(i))
@@ -514,50 +523,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Display new window listing the new features and bug fixes
     def showChangelog(self):
-        message = QtWidgets.QMessageBox()
-        message.setWindowTitle("What's New")
-        message.setText(CHANGE_LOG)
-
-        if self.mode == 'light':
-            message.setStyleSheet(LIGHT_STYLESHEET)
-        else:
-            message.setStyleSheet(DARK_STYLESHEET)
-        
-        message.exec()
+        self.createMessageWindow("What's New", CHANGE_LOG)
     
 
     # Display new window to let the user know what went wrong - missing romfs/output path, bad custom logic, etc.
     def showUserError(self, msg):
-        message = QtWidgets.QMessageBox()
-        message.setWindowTitle("Error")
-        message.setText(msg)
-
-        if self.mode == 'light':
-            message.setStyleSheet(LIGHT_STYLESHEET)
-        else:
-            message.setStyleSheet(DARK_STYLESHEET)
-        
-        message.exec()
+        self.createMessageWindow("Error", msg)
     
 
     # Display new window listing the currently known issues
     def showIssues(self):
-        message = QtWidgets.QMessageBox()
-        message.setWindowTitle("Known Issues")
-        message.setText(KNOWN_ISSUES)
-
-        if self.mode == 'light':
-            message.setStyleSheet(LIGHT_STYLESHEET)
-        else:
-            message.setStyleSheet(DARK_STYLESHEET)
-        
-        message.exec()
+        self.createMessageWindow("Known Issues", KNOWN_ISSUES)
     
 
+    def showTips(self):
+        self.createMessageWindow("Helpful Tips", HELPFUL_TIPS)
+
+
+    # Display new window with information about the randomizer
     def showInfo(self):
+        self.createMessageWindow("Link's Awakening Switch Randomizer", ABOUT_INFO)
+    
+
+    def createMessageWindow(self, title, text):
         message = QtWidgets.QMessageBox()
-        message.setWindowTitle("Link's Awakening Switch Randomizer")
-        message.setText(ABOUT_INFO)
+        message.setWindowTitle(title)
+        message.setText(text)
 
         if self.mode == 'light':
             message.setStyleSheet(LIGHT_STYLESHEET)
@@ -576,13 +567,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.tab_Changed()
         except: # Lots of potential different errors, so we use a general except to be safe
             self.showUserError('Could not decode settings string!')
-    
+
 
     def randomizeSettings(self):
         new_settings = settings_manager.randomizeSettings(self)
         settings_manager.loadSettings(self, new_settings)
         self.tab_Changed()
-    
+
 
     # Override mouse click event to make certain stuff lose focus
     def mousePressEvent(self, event):

@@ -1,25 +1,26 @@
-SWORD_FOUND_FLAG        = 'unused0357'
-SHIELD_FOUND_FLAG       = 'unused0358'
-BRACELET_FOUND_FLAG     = 'unused0359'
-LENS_FOUND_FLAG         = 'unused0360'
+SWORD_FOUND_FLAG        = 'unused0151'
+SHIELD_FOUND_FLAG       = 'unused0229'
+BRACELET_FOUND_FLAG     = 'unused0230'
+LENS_FOUND_FLAG         = 'unused0271'
 
-RED_TUNIC_FOUND_FLAG    = 'unused0361'
-BLUE_TUNIC_FOUND_FLAG   = 'unused0362'
+RED_TUNIC_FOUND_FLAG    = 'unused0294'
+BLUE_TUNIC_FOUND_FLAG   = 'unused0357'
 
-GORIYA_FLAG             = 'unused0432'
-MAMU_FLAG               = 'unused0433'
-MANBO_FLAG              = 'unused0434'
+GORIYA_FLAG             = 'unused0358'
+MAMU_FLAG               = 'unused0359'
+MANBO_FLAG              = 'unused0360'
 
-ROOSTER_CAVE_FLAG       = 'unused0707'
-DREAM_SHRINE_FLAG       = 'unused0708'
-WOODS_LOOSE_FLAG        = 'unused0709'
-MERMAID_CAVE_FLAG       = 'MermaidCaveItemGet'
-POTHOLE_FLAG            = 'PotholeGet'
+BEACH_LOOSE_FLAG        = 'unused0361'
+WOODS_LOOSE_FLAG        = 'unused0362'
+POTHOLE_FLAG            = 'unused0363' #'PotholeGet'
+DREAM_SHRINE_FLAG       = 'unused0390'
+ROOSTER_CAVE_FLAG       = 'unused0391'
+MERMAID_CAVE_FLAG       = 'unused0393' #'MermaidCaveItemGet'
 
-BOMBS_FOUND_FLAG        = 'BombsFound'
+BOMBS_FOUND_FLAG        = 'unused0424' # 'BombsFound'
 
-ROOSTER_FOUND_FLAG      = 'RoosterFound'
-BOWWOW_FOUND_FLAG       = 'BowWowFound'
+ROOSTER_FOUND_FLAG      = 'unused0425' # 'RoosterFound'
+BOWWOW_FOUND_FLAG       = 'unused0426' # 'BowWowFound'
 
 INSTRUMENT_FLAGS = {
     'D1-instrument': 'TailCaveInstrumentGet',
@@ -171,7 +172,75 @@ CHEST_ROOMS = {
  'D0-zol-pots': 'Lv10ClothesDungeon_05D',
  'D0-south-orbs': 'Lv10ClothesDungeon_07F',
  'D0-west-color-puzzle': 'Lv10ClothesDungeon_07D',
- 'D0-putters': 'Lv10ClothesDungeon_08E'}
+ 'D0-putters': 'Lv10ClothesDungeon_08E'
+}
+PANEL_CHEST_ROOMS = {
+ 'panel-D1-west-hallway': 'PanelLv01TailCave_05A',
+ 'panel-D1-3-of-a-kind': 'PanelLv01TailCave_05F',
+ 'panel-D1-bomb-room': 'PanelLv01TailCave_06B',
+ 'panel-D1-button-chest': 'PanelLv01TailCave_07D',
+ 'panel-D1-stalfos-chest': 'PanelLv01TailCave_07E',
+ 'panel-D1-4-zols-chest': 'PanelLv01TailCave_08B',
+ 'panel-D1-beetles': 'PanelLv01TailCave_08C',
+ 'panel-D2-boos': 'PanelLv02BottleGrotto_02B',
+ 'panel-D2-vacuum-mouth-room': 'PanelLv02BottleGrotto_03C',
+ 'panel-D2-kill-puzzle': 'PanelLv02BottleGrotto_03F',
+ 'panel-D2-west-chest': 'PanelLv02BottleGrotto_06B',
+ 'panel-D2-double-stalfos': 'PanelLv02BottleGrotto_07D',
+ 'panel-D2-single-shy-guy': 'PanelLv02BottleGrotto_08D',
+ 'panel-D2-button-chest': 'PanelLv02BottleGrotto_08F',
+ 'panel-D3-basement-north': 'PanelLv03KeyCavern_03G',
+ 'panel-D3-five-zols': 'PanelLv03KeyCavern_04C',
+ 'panel-D3-extra-1': 'PanelLv03KeyCavern_04D',
+ 'panel-D3-basement-west': 'PanelLv03KeyCavern_04F',
+ 'panel-D3-extra-2': 'PanelLv03KeyCavern_04H',
+ 'panel-D3-basement-south': 'PanelLv03KeyCavern_05G',
+ 'panel-D3-hallway-side-room': 'PanelLv03KeyCavern_06C',
+ 'panel-D3-vacuum-mouth': 'PanelLv03KeyCavern_08C',
+ 'panel-D3-pre-boss': 'PanelLv03KeyCavern_08G',
+ 'panel-D4-crystals': 'PanelLv04AnglersTunnel_08E',
+ 'panel-D4-north-chest': 'PanelLv04AnglersTunnel_02D',
+ 'panel-D4-east-side-north': 'PanelLv04AnglersTunnel_03G',
+ 'panel-D5-crystal-blocks': 'PanelLv05CatfishsMaw_01C',
+ 'panel-D5-past-master-stalfos-3': 'PanelLv05CatfishsMaw_01E',
+ 'panel-D5-past-master-stalfos-1': 'PanelLv05CatfishsMaw_05G',
+ 'panel-D5-helmasaurs': 'PanelLv05CatfishsMaw_07D',
+ 'panel-D5-west-stairs-chest': 'PanelLv05CatfishsMaw_08E',
+ 'panel-D6-far-northwest': 'PanelLv06FaceShrine_02A',
+ 'panel-D6-extra-1': 'PanelLv06FaceShrine_02D',
+ 'panel-D6-far-northeast': 'PanelLv06FaceShrine_02H',
+ 'panel-D6-3-wizzrobes': 'PanelLv06FaceShrine_05A',
+ 'panel-D6-extra-2': 'PanelLv06FaceShrine_05H',
+ 'panel-D6-southwest-chest': 'PanelLv06FaceShrine_07B',
+ 'panel-D7-3ofakind-north': 'PanelLv07EagleTower_01B',
+ 'panel-D7-2f-horseheads': 'PanelLv07EagleTower_01C',
+ 'panel-D7-extra-1': 'PanelLv07EagleTower_02D',
+ 'panel-D7-hinox': 'PanelLv07EagleTower_04A',
+ 'panel-D7-3f-horseheads': 'PanelLv07EagleTower_05G',
+ 'panel-D7-grim-creeper': 'PanelLv07EagleTower_06H',
+ 'panel-D8-far-northwest': 'PanelLv08TurtleRock_02A',
+ 'panel-D8-dodongos': 'PanelLv08TurtleRock_03F',
+ 'panel-D8-gibdos': 'PanelLv08TurtleRock_03G',
+ 'panel-D8-extra-1': 'PanelLv08TurtleRock_03H',
+ 'panel-D8-extra-2': 'PanelLv08TurtleRock_04A',
+ 'panel-D8-statue': 'PanelLv08TurtleRock_04C',
+ 'panel-D8-extra-3': 'PanelLv08TurtleRock_04H',
+ 'panel-D8-extra-4': 'PanelLv08TurtleRock_05H',
+ 'panel-D8-west-vire': 'PanelLv08TurtleRock_06A',
+ 'panel-D8-west-roomba': 'PanelLv08TurtleRock_06B',
+ 'panel-D8-sparks-chest': 'PanelLv08TurtleRock_07B',
+ 'panel-D8-east-of-pots': 'PanelLv08TurtleRock_07F',
+ 'panel-D8-east-roomba': 'PanelLv08TurtleRock_07G',
+ 'panel-D8-far-southwest': 'PanelLv08TurtleRock_08A',
+ 'panel-D8-far-southeast': 'PanelLv08TurtleRock_08H',
+ 'panel-D0-northern-chest': 'PanelLv10ClothesDungeon_04F',
+ 'panel-D0-zol-pots': 'PanelLv10ClothesDungeon_05D',
+ 'panel-D0-north-orbs': 'PanelLv10ClothesDungeon_05E',
+ 'panel-D0-east-color-puzzle': 'PanelLv10ClothesDungeon_05F',
+ 'panel-D0-west-color-puzzle': 'PanelLv10ClothesDungeon_07D',
+ 'panel-D0-south-orbs': 'PanelLv10ClothesDungeon_07F',
+ 'panel-D0-putters': 'PanelLv10ClothesDungeon_08E'
+}
 
 
 SMALL_KEY_ROOMS = {
@@ -248,103 +317,6 @@ HEART_ROOMS = {
     'diamond-island': 'Field_05E'
 }
 
-
-# music files
-# MUSIC_FILES = (
-#     '07_Owl.ry',
-#     '07_OwlLast',
-#     '15_Shop_Fast',
-#     '25_Dangeon_BossMiddle',
-#     '26_Dangeon_Boss',
-#     '77_LastBoss_DemoText',
-#     '78_LastBoss_Appear-Battle',
-#     '79_LastBossWin',
-#     '84_Title_NoIntro',
-#     'FishingHit',
-#     'Koakumakun',
-#     'LastBossFinal',
-#     'PanelDanjeonResult',
-#     'PanelDanjeonStrings_Wind_Timpani',
-#     'PanelDanjeonStrings5',
-#     'PanelDanjeonWind',
-#     'PanelDanpeiEdit',
-#     'PanelShadowLink',
-#     'RapidTimeAttack',
-#     'Title_OP'
-# )
-# MUSIC_NAMES = (
-#     '03_NameInput',
-#     '04_House_First',
-#     '06_Field_First',
-#     '07_Owl.ry',
-#     '07_OwlLast',
-#     '09_Field_Normal_Intro',
-#     '10_Field_Normal',
-#     '11_Meve',
-#     '12_StrangeForest',
-#     '15_Shop',
-#     '15_Shop_Fast',
-#     '16_Fairy',
-#     '18_GameShop',
-#     '19_House',
-#     '20_MarineSing',
-#     '22_Cave',
-#     '23_Dangeon1_TailCave',
-#     '24_Dangeon_2DCave',
-#     '25_Dangeon_BossMiddle',
-#     '26_Dangeon_Boss',
-#     '30_Event_RescueBowwow',
-#     '31_Event_RescueBowwow_intro',
-#     '32_Wright',
-#     '34_Dangeon2_PotCave',
-#     '36_Richard',
-#     '38_Dangeon_Castle',
-#     '39_Dangeon_Key',
-#     '42_AnimalVillage',
-#     '43_GoatHouse',
-#     '44_DreamShrine_Entrance',
-#     '46_DreamShrine',
-#     '50_TaruTaru',
-#     '50_TaruTaru_AfterRescue',
-#     '52_Dangeon4_BasinAngler',
-#     '55_GhostHouse',
-#     '56_FishingMan',
-#     '57_Dangeon5_CatFish',
-#     '62_Dangeon6_TempleOfFace',
-#     '64_Dangeon_Clothes',
-#     '66_ChikenHut',
-#     '67_Dangeon7_TowerOfEagle',
-#     '72_Dangeon7_TurtleRock',
-#     '74_RapidsFallGameOfRaft',
-#     '76_Dangeon_HolyEgg',
-#     '77_LastBoss_DemoText',
-#     '78_LastBoss_Appear-Battle',
-#     '79_LastBossWin',
-#     '84_Title_NoIntro',
-#     '85_TotakekeSong',
-#     '86_ZeldaName',
-#     '87_Richard2.30',
-#     'crane_pond',
-#     'FishingHit',
-#     'Koakumakun',
-#     'LastBossFinal',
-#     'MarineName',
-#     'PanelDanjeonResult',
-#     'PanelDanjeonStrings_Wind_Timpani',
-#     'PanelDanjeonStrings5',
-#     'PanelDanjeonWind',
-#     'PanelDanpeiEdit',
-#     'PanelDanpeiHouse',
-#     'PanelShadowLink',
-#     'RapidTimeAttack',
-#     'RecorderField_FushigiNoMori',
-#     'RecorderField_Main',
-#     'RecorderField_MainNormal',
-#     'RecorderField_TaruTaru',
-#     'ShellHouse',
-#     'Title_OP'
-# )
-# MUSIC_SUFFIX = '.ry.48.dspadpcm.bfstm'
 
 BGM_TRACKS = (
     'BGM_DUNGEON_LV6_FACE',
@@ -441,6 +413,7 @@ ITEM_MODELS = {
     # 'MirrorShield': 'ItemMirrorShield.bfres',
     'Bomb': 'ItemBomb.bfres',
     # 'Bow': 'ItemBow.bfres',
+    'Arrow': 'ItemArrow.bfres',
     'HookShot': 'ItemHookShot.bfres',
     'Boomerang': 'ItemBoomerang.bfres',
     'MagicRod': 'ItemMagicRod.bfres',
@@ -452,6 +425,9 @@ ITEM_MODELS = {
     # 'PowerBraceletLv2': 'ItemPowerBraceletLv2.bfres',
     'PegasusBoots': 'ItemPegasusBoots.bfres',
     'Ocarina': 'ItemOcarina.bfres',
+    'Marin': 'NpcMarin.bfres',
+    'ManboTamegoro': 'NpcManboTamegoro.bfres',
+    'Mamu': 'NpcMamu.bfres',
     'Flippers': 'ItemFlippers.bfres',
     'SecretMedicine': 'ItemSecretMedicine.bfres',
     'SecretSeashell': 'ItemSecretSeashell.bfres',
@@ -503,19 +479,36 @@ ITEM_MODELS = {
 
 CHEST_SIZES = {
     'important': 1.2,
-    'trade': 1.0,
-    'seashell': 1.0,
-    'good': 1.0,
+    'important-health': 1.2,
+    'trade': 1.2,
+    'seashell': 1.2,
+    'good': 0.8,
     'junk': 0.8,
-    'D1': 1.0,
-    'D2': 1.0,
-    'D3': 1.0,
-    'D4': 1.0,
-    'D5': 1.0,
-    'D6': 1.0,
-    'D7': 1.0,
-    'D8': 1.0,
-    'D0': 1.0
+    # 'D1': 1.0,
+    # 'D2': 1.0,
+    # 'D3': 1.0,
+    # 'D4': 1.0,
+    # 'D5': 1.0,
+    # 'D6': 1.0,
+    # 'D7': 1.0,
+    # 'D8': 1.0,
+    # 'D0': 1.0
+}
+
+CHEST_TEXTURES = {
+    'default': 'ObjTreasureBox.bfres',
+    'junk': "ObjTreasureBoxJunk.bfres",
+    'life-upgrade': "ObjTreasureBoxLifeUpgrade.bfres",
+    'key': "ObjTreasureBoxKey.bfres"
+}
+
+MODEL_SIZES = {
+    'Marin': 0.65,
+    'ManboTamegoro': 0.35,
+    'Mamu': 0.25
+}
+MODEL_ROTATIONS = {
+    'SinkingSword': 180.0
 }
 
 

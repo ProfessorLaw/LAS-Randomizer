@@ -1,6 +1,6 @@
 import RandomizerCore.Tools.event_tools as event_tools
-from RandomizerCore.Randomizers import data, item_get
-
+from RandomizerCore.Randomizers import item_get
+from RandomizerCore.Randomizers.data import HEART_FLAGS, MODEL_SIZES, MODEL_ROTATIONS
 
 
 sunken = [
@@ -28,7 +28,7 @@ def changeHeartPiece(flowchart, item_key, item_index, model_path, model_name, ro
     event_tools.addEntryPoint(flowchart, room)
     event_tools.createActionChain(flowchart, room, [
         ('SinkingSword', 'Destroy', {}),
-        ('EventFlags', 'SetFlag', {'symbol': data.HEART_FLAGS[room], 'value': True})
+        ('EventFlags', 'SetFlag', {'symbol': HEART_FLAGS[room], 'value': True})
     ], get_anim)
 
     act.type = 0x194 # sinking sword
@@ -44,12 +44,20 @@ def changeHeartPiece(flowchart, item_key, item_index, model_path, model_name, ro
         else:
             act.posY += 0.375 # raise all others by 1/4 tile
     
-    act.parameters[0] = bytes('ObjSinkingSword.bfres' if item_key == 'SwordLv1' else model_path, 'utf-8')
-    act.parameters[1] = bytes('SinkingSword' if item_key == 'SwordLv1' else model_name, 'utf-8')
+    act.parameters[0] = bytes(model_path, 'utf-8')
+    act.parameters[1] = bytes(model_name, 'utf-8')
     act.parameters[2] = bytes(room, 'utf-8') # entry point
-    act.parameters[3] = bytes(data.HEART_FLAGS[room], 'utf-8') # flag which controls if the heart piece appears or not
+    act.parameters[3] = bytes(HEART_FLAGS[room], 'utf-8') # flag which controls if the heart piece appears or not
 
     if item_key == 'Seashell':
         act.parameters[4] = bytes('true', 'utf-8')
     else:
         act.parameters[4] = bytes('false', 'utf-8')
+    
+    if model_name in MODEL_SIZES:
+        size = MODEL_SIZES[model_name]
+        act.scaleX = size
+        act.scaleY = size
+        act.scaleZ = size
+    if model_name in MODEL_ROTATIONS:
+        act.rotY = MODEL_ROTATIONS[model_name]

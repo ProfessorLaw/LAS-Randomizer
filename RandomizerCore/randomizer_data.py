@@ -19,6 +19,9 @@ with open(os.path.join(RESOURCE_PATH, 'changes.txt'), 'r') as f:
 with open(os.path.join(RESOURCE_PATH, 'issues.txt'), 'r') as f:
     KNOWN_ISSUES = f.read()
 
+with open(os.path.join(RESOURCE_PATH, 'tips.txt'), 'r') as f:
+    HELPFUL_TIPS = f.read()
+
 with open(os.path.join(RESOURCE_PATH, 'about.txt'), 'r') as f:
     ABOUT_INFO = f.read()
 
@@ -58,7 +61,7 @@ FISHING_REWARDS = LOCATIONS['Fishing_Rewards']
 RAPIDS_REWARDS = LOCATIONS['Rapids_Rewards']
 DAMPE_REWARDS = LOCATIONS['Dampe_Rewards']
 # SHOP_ITEMS = LOCATIONS['Shop_Items']
-TRENDY_REWARDS = LOCATIONS['Trendy_Rewards']
+# TRENDY_REWARDS = LOCATIONS['Trendy_Rewards']
 FREE_GIFT_LOCATIONS = LOCATIONS['Free_Gifts']
 TRADE_GIFT_LOCATIONS = LOCATIONS['Trade_Gifts']
 BOSS_LOCATIONS = LOCATIONS['Boss_Locations']
@@ -74,8 +77,8 @@ TOTAL_CHECKS = set([
     *MISCELLANEOUS_CHESTS, *FISHING_REWARDS, *RAPIDS_REWARDS,
     *DAMPE_REWARDS, *FREE_GIFT_LOCATIONS, *TRADE_GIFT_LOCATIONS,
     *BOSS_LOCATIONS, *MISC_LOCATIONS, *SEASHELL_REWARDS,
-    *HEART_PIECE_LOCATIONS, *TRENDY_REWARDS, *LEAF_LOCATIONS,
-    *DUNGEON_OWLS, *OVERWORLD_OWLS, *BLUE_RUPEES, #*SHOP_ITEMS
+    *HEART_PIECE_LOCATIONS, *LEAF_LOCATIONS, *DUNGEON_OWLS,
+    *OVERWORLD_OWLS, *BLUE_RUPEES, #*SHOP_ITEMS, *TRENDY_REWARDS
 ])
 
 SEASHELL_VALUES = (0, 5, 15, 30, 40, 50)
@@ -84,8 +87,14 @@ LOGIC_PRESETS = ('basic', 'advanced', 'glitched', 'hell', 'none')
 
 OWLS_SETTINGS = ('none', 'overworld', 'dungeons', 'all') # ('vanilla', 'hints', 'gifts', 'hybrid')
 
-TRAP_SETTINGS = ('none', 'few', 'several', 'many')
+TRAP_SETTINGS = ('none', 'few', 'several', 'many', 'trapsanity')
 
-# DUNGEON_ITEM_SETTINGS = ('standard', 'keys', 'keys+mcb')
+CHEST_ASPECT_SETTINGS = ('default', 'csmc', 'camc')
+
+DUNGEON_ITEM_SETTINGS = ('none', 'stone-beak', 'mc', 'mcb')
+
+# KEYSANITY_SETTINGS = ('standard', 'keys', 'keys+mcb')
 
 PLATFORMS = ('console', 'emulator')
+
+STEALING_REQUIREMENTS = ('always', 'never', 'normal')

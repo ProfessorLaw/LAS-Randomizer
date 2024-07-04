@@ -1,3 +1,7 @@
+import platform
+import subprocess
+from pathlib import Path
+
 from PySide6 import QtWidgets
 from RandomizerUI.UI.ui_progress_form import Ui_ProgressWindow
 from RandomizerCore.shuffler import ItemShuffler
@@ -10,11 +14,11 @@ import shutil
 
 class ProgressWindow(QtWidgets.QMainWindow):
     
-    def __init__(self, rom_path, out_dir, item_defs, logic_defs, settings):
+    def __init__(self, rom_path, out_dir, item_defs, logic_defs, settings, settings_string):
         super (ProgressWindow, self).__init__()
         self.ui = Ui_ProgressWindow()
         self.ui.setupUi(self)
-        
+
         self.rom_path : str = rom_path
         self.out_dir : str = out_dir
         self.seed : str = settings['seed']
@@ -23,21 +27,20 @@ class ProgressWindow(QtWidgets.QMainWindow):
         self.item_defs = copy.deepcopy(item_defs)
         self.logic_defs = copy.deepcopy(logic_defs)
         self.settings = copy.deepcopy(settings)
+        self.settings_string : str = settings_string
         
-        self.valid_placements = 155 - len(settings['starting-items'])
-        self.num_of_mod_tasks = 258
-        
+        self.num_of_mod_tasks = 255
+
+        self.ui.openOutputFolder.setVisible(False)
+        self.ui.openOutputFolder.clicked.connect(self.openOutputFolderButtonClicked)
+
         # if not settings['shuffle-companions']:
         #     self.num_of_mod_files += 8
 
         if settings['blupsanity']:
             self.num_of_mod_tasks += 1
         
-        if settings['owl-overworld-gifts']:
-            self.valid_placements += 9
-        
         if settings['owl-dungeon-gifts']:
-            self.valid_placements += 24
             self.num_of_mod_tasks += 4 # 4 extra room modifications
         
         if settings['randomize-music']:
@@ -46,17 +49,24 @@ class ProgressWindow(QtWidgets.QMainWindow):
         if settings['bad-pets']:
             self.num_of_mod_tasks += 10
         
-        if settings['randomize-enemies'] or settings['randomize-enemy-sizes']:
-            self.num_of_mod_tasks += 312
-        
+        modded_enemies = 0
+        if settings['randomize-enemies']:
+            modded_enemies = 313
+        if settings['randomize-enemy-sizes']:
+            modded_enemies = 323
+        self.num_of_mod_tasks += modded_enemies
+
         if settings['shuffle-dungeons']:
             self.num_of_mod_tasks += 19
         
         if settings['classic-d2']:
             self.num_of_mod_tasks += 1
         
-        if settings['free-book']:
-            self.num_of_mod_tasks += 1
+        if settings['open-mabe']:
+            self.num_of_mod_tasks += 4
+        
+        if settings['chest-aspect'] == 'camc':
+            self.num_of_mod_tasks += 65 # len(PANEL_CHEST_ROOMS)
         
         self.done = False
         self.cancel = False
@@ -74,13 +84,11 @@ class ProgressWindow(QtWidgets.QMainWindow):
 
         # initialize the shuffler thread
         self.current_job = 'shuffler'
-        self.ui.progressBar.setMaximum(self.valid_placements)
+        self.ui.progressBar.setMaximum(0) # busy status instead of direct progress
         self.ui.label.setText(f'Shuffling item placements...')
         self.shuffler_process =\
             ItemShuffler(self.out_dir, self.seed, self.logic, self.settings, self.item_defs, self.logic_defs)
         self.shuffler_process.setParent(self)
-        self.shuffler_process.progress_update.connect(self.updateProgress)
-        self.shuffler_process.progress_adjustment.connect(self.adjustProgress)
         self.shuffler_process.give_placements.connect(self.receivePlacements)
         self.shuffler_process.is_done.connect(self.shufflerDone)
         self.shuffler_process.error.connect(self.shufflerError)
@@ -90,11 +98,6 @@ class ProgressWindow(QtWidgets.QMainWindow):
     # receives the int signal as a parameter named progress
     def updateProgress(self, progress):
         self.ui.progressBar.setValue(progress)
-    
-
-    # if an item has to be reshuffled, adjust the progress bar accordingly
-    def adjustProgress(self):
-        self.valid_placements += 1
     
 
     # receive the placements from the shuffler thread to the modgenerator
@@ -108,6 +111,7 @@ class ProgressWindow(QtWidgets.QMainWindow):
         from RandomizerCore.Paths.randomizer_paths import LOGS_PATH
         with open(LOGS_PATH, 'w') as f:
             f.write(f'{self.seed} - {self.logic.capitalize()} Logic')
+            f.write(f'\n{self.settings_string}')
             f.write(f'\n\n{er_message}')
             f.write(f'\n\n{self.settings}')
     
@@ -128,6 +132,8 @@ class ProgressWindow(QtWidgets.QMainWindow):
         self.current_job = 'modgenerator'
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.setMaximum(self.num_of_mod_tasks)
+        self.ui.progressBar.setTextVisible(True)
+        self.ui.progressBar.setFormat("%p%")
         self.ui.label.setText(f'Generating mod files...')
         self.mods_process = ModsProcess(self.placements, self.rom_path, f'{self.out_dir}', self.item_defs, self.seed, self.randstate)
         self.mods_process.setParent(self)
@@ -142,6 +148,7 @@ class ProgressWindow(QtWidgets.QMainWindow):
         from RandomizerCore.Paths.randomizer_paths import LOGS_PATH
         with open(LOGS_PATH, 'w') as f:
             f.write(f"{self.seed} - {self.logic.capitalize()} Logic")
+            f.write(f'\n{self.settings_string}')
             f.write(f"\n\n{er_message}")
             f.write(f"\n\n{self.settings}")
 
@@ -164,6 +171,8 @@ class ProgressWindow(QtWidgets.QMainWindow):
         
         self.ui.progressBar.setValue(self.num_of_mod_tasks)
         self.ui.label.setText("All done! Check the README for instructions on how to play!")
+        self.ui.progressBar.setVisible(False)
+        self.ui.openOutputFolder.setVisible(True)
         self.done = True
 
 
@@ -179,3 +188,15 @@ class ProgressWindow(QtWidgets.QMainWindow):
                 self.shuffler_process.stop()
             elif self.current_job == 'modgenerator':
                 self.mods_process.stop()
+
+    def openFolder(self, path):
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        else:
+            subprocess.Popen(["xdg-open", path])
+
+    def openOutputFolderButtonClicked(self):
+        self.openFolder(Path(self.out_dir).parent.absolute())
+        self.window().close()

@@ -1,4 +1,4 @@
-from RandomizerCore.Data.randomizer_data import *
+from RandomizerCore.randomizer_data import *
 import yaml, base64, copy, random
 
 
@@ -15,21 +15,23 @@ BASE_OPTIONS = {
     'miscellaneousCheck': True,
     'heartsCheck': True,
     'rupCheck': False,
-    'instrumentCheck': True,
+    'instrumentCheck': False,
     'instrumentsComboBox': 0,
     'seashellsComboBox': 2,
     'owlsComboBox': 0,
-    'trapsComboBox': 0,
+    'trapsComboBox': 1,
     'leavesCheck': True,
     'tricksComboBox': 0,
     'bookCheck': True,
+    'extendedConsumableCheck': True, # Helps beginner players not run into the issue of being too low on resources
+    'dungeonItemsComboBox': 3, # Beginner setting to start with maps, compasses, beaks
     'unlockedBombsCheck': True,
     'shuffledBombsCheck': False,
-    'fastTrendyCheck': False,
     'stealingCheck': True,
-    'farmingCheck': True,
     'shuffledPowderCheck': False,
     'musicCheck': False,
+    'openMabeCheck': False,
+    'bossCutscenesCheck': True,
     'enemyCheck': False,
     'enemySizesCheck': False,
     'spoilerCheck': True,
@@ -39,23 +41,33 @@ BASE_OPTIONS = {
     'mazeCheck': True,
     'swampCheck': False,
     'stalfosCheck': False,
-    'chestSizesCheck': False,
+    'chestAspectComboBox': 0,
     'songsCheck': False,
-    'fastFishingCheck': True,
+    'fastFishingCheck': False,
     'dungeonsCheck': False,
+    'blurCheck': True, # May change, lots of people hate the blur and it even hurts some player's eyes
     'ohkoCheck': False,
     'lv1BeamCheck': False,
-    'niceRodCheck': False,
+    'niceRodCheck': True,
+    'niceBombsCheck': False,
+    'stealingComboBox': 0, # May change, but players often feel frustrated at not being able to steal, not knowing sword is needed
+    'chestAnimationsCheck': True,
+    'keyAnimationsCheck': True,
     'rupeesSpinBox': 0,
-    'starting_gear': []
+    'starting_gear': ['sword', 'shield', 'ocarina', 'song-mambo']
 }
 
 EXTRA_OPTIONS = [
     'theme',
-    'fomfs_folder',
+    'romfs_folder',
     'output_folder',
     'seed',
     'platform',
+]
+
+STRING_EXCLUSIONS = [
+    'musicCheck',
+    'blurCheck',
 ]
 
 CHECK_LOCATIONS = {
@@ -96,7 +108,7 @@ def applyDefaults(window):
     window.excluded_checks.update(FISHING_REWARDS)
     window.excluded_checks.update(RAPIDS_REWARDS)
     window.excluded_checks.update(DAMPE_REWARDS)
-    window.excluded_checks.update(TRENDY_REWARDS)
+    # window.excluded_checks.update(TRENDY_REWARDS)
     # window.excluded_checks.difference_update(SHOP_ITEMS)
     window.excluded_checks.difference_update(FREE_GIFT_LOCATIONS)
     window.excluded_checks.update(TRADE_GIFT_LOCATIONS)
@@ -228,6 +240,8 @@ def encodeSettings(window) -> str:
     list_bits = []
 
     for k,v in settings_dict.items():
+        if k in STRING_EXCLUSIONS:
+            continue
         if isinstance(v, bool):
             bool_bits.append(int(v))
             if len(bool_bits) == 8:
@@ -286,6 +300,8 @@ def decodeSettings(settings_str: str) -> dict:
     locs = sorted(list(copy.deepcopy(TOTAL_CHECKS)))
 
     for k,v in BASE_OPTIONS.items():
+        if k in STRING_EXCLUSIONS:
+            continue
         if isinstance(v, bool):
             check_boxes.append(k)
         elif isinstance(v, int):
@@ -358,13 +374,13 @@ def loadRandomizerSettings(window, seed):
         'platform': PLATFORMS[window.ui.platformComboBox.currentIndex()],
         'create-spoiler': window.ui.spoilerCheck.isChecked(),
         'free-book': window.ui.bookCheck.isChecked(),
+        'extended-consumable-drop': window.ui.extendedConsumableCheck.isChecked(),
+        'dungeon-items': DUNGEON_ITEM_SETTINGS[window.ui.dungeonItemsComboBox.currentIndex()],
         'unlocked-bombs': window.ui.unlockedBombsCheck.isChecked(),
         'shuffle-bombs': window.ui.shuffledBombsCheck.isChecked(),
         'shuffle-powder': window.ui.shuffledPowderCheck.isChecked(),
-        'reduce-farming': window.ui.farmingCheck.isChecked(),
         'fast-fishing': window.ui.fastFishingCheck.isChecked(),
         'fast-stealing': window.ui.stealingCheck.isChecked(),
-        'fast-trendy': window.ui.fastTrendyCheck.isChecked(),
         'fast-songs': window.ui.songsCheck.isChecked(),
         'shuffle-instruments': window.ui.instrumentCheck.isChecked(),
         'starting-instruments': window.ui.instrumentsComboBox.currentIndex(),
@@ -379,20 +395,27 @@ def loadRandomizerSettings(window, seed):
         'owl-dungeon-gifts': window.dungeon_owls,
         # 'owl-hints': True if OWLS_SETTINGS[window.ui.owlsComboBox.currentIndex()] in ['hints', 'hybrid'] else False,
         'fast-stalfos': window.ui.stalfosCheck.isChecked(),
-        'scaled-chest-sizes': window.ui.chestSizesCheck.isChecked(),
+        'chest-aspect': CHEST_ASPECT_SETTINGS[window.ui.chestAspectComboBox.currentIndex()],
         'seashells-important': True if len([s for s in SEASHELL_REWARDS if s not in window.excluded_checks]) > 0 else False,
         'trade-important': True if len([t for t in TRADE_GIFT_LOCATIONS if t not in window.excluded_checks]) > 0 else False,
         # 'shuffle-companions': window.ui.companionCheck.isChecked(),
         # 'randomize-entrances': window.ui.loadingCheck.isChecked(),
         'randomize-music': window.ui.musicCheck.isChecked(),
+        'open-mabe': window.ui.openMabeCheck.isChecked(),
+        'boss-cutscenes': window.ui.bossCutscenesCheck.isChecked(),
         'randomize-enemies': window.ui.enemyCheck.isChecked(),
         'randomize-enemy-sizes': window.ui.enemySizesCheck.isChecked(),
         # 'panel-enemies': True if len([s for s in DAMPE_REWARDS if s not in window.excluded_checks]) > 0 else False,
         'shuffle-dungeons': window.ui.dungeonsCheck.isChecked(),
-        # 'dungeon-items': DUNGEON_ITEM_SETTINGS[window.ui.itemsComboBox.currentIndex()],
-        '1HKO': window.ui.ohkoCheck.isChecked(),
+        # 'keysanity': DUNGEON_ITEM_SETTINGS[window.ui.itemsComboBox.currentIndex()],
+        'blur-removal': window.ui.blurCheck.isChecked(),
+        'OHKO': window.ui.ohkoCheck.isChecked(),
         'lv1-beam': window.ui.lv1BeamCheck.isChecked(),
         'nice-rod': window.ui.niceRodCheck.isChecked(),
+        'nice-bombs': window.ui.niceBombsCheck.isChecked(),
+        'stealing': STEALING_REQUIREMENTS[window.ui.stealingComboBox.currentIndex()],
+        'fast-chests': window.ui.chestAnimationsCheck.isChecked(),
+        'fast-keys': window.ui.keyAnimationsCheck.isChecked(),
         'starting-items': window.starting_gear,
         'starting-rupees': window.ui.rupeesSpinBox.value(),
         'excluded-locations': window.excluded_checks
@@ -402,6 +425,7 @@ def loadRandomizerSettings(window, seed):
 
 def bitsToInt(bits: list) -> int:
     """Reads a list of bits in big endian and converts it into an unsigned integer"""
+
     while len(bits) < 8:
         bits.append(0)
     bits.reverse() # reverse bit order since base64 is big endian
