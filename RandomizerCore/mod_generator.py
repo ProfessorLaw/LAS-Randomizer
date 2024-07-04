@@ -1112,7 +1112,6 @@ class ModsProcess(QtCore.QThread):
         ### Area : Preventing a softlock when going in taltal-sunken-grotto without flippers
         if self.thread_active:
             flow = event_tools.readFlow(f'{self.rom_path}/region_common/event/Area.bfevfl')
-            actors.addNeededActors(flow.flowchart, self.rom_path)
             field_tp = event_tools.createActionEvent(flow.flowchart, 'GameControl', 'RequestLevelJump',
                                                      {'level': 'Field',
                                                       'locator': 'Field_02N_b',
@@ -1136,7 +1135,7 @@ class ModsProcess(QtCore.QThread):
             )
 
             event_tools.insertEventAfter(flow.flowchart, 'Event211', is_sunken_grotto)
-            self.writeModFile(f'{self.romfs_dir}/region_common/event', 'Area.bfevfl', flow)
+            self.writeFile('Area.bfevfl', flow)
 
     def makeGeneralDatasheetChanges(self):
         """Make changes to some datasheets that are general in nature and not tied to specific item placements"""
