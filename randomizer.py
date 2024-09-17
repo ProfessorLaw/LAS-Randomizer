@@ -22,7 +22,7 @@ if IS_RUNNING_FROM_SOURCE:
     except AttributeError:
         pass # Ignore for versions of Windows before Windows 7
     except ImportError:
-        if sys.platform != 'linux': raise
+        if sys.platform == 'win32': raise
 
 build_icon = "icon.ico"
 if sys.platform == "darwin": # mac

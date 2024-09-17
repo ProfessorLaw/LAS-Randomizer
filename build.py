@@ -6,6 +6,9 @@ from RandomizerCore.randomizer_data import VERSION, EXTRA_TITLE_DATA
 import glob
 import sys
 
+import glob
+import sys
+
 base_name = f"LAS Randomizer v{VERSION}"
 build_path = os.path.join(".", "build")
 

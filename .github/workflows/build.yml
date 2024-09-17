@@ -24,7 +24,7 @@ jobs:
     needs : prepare-build-files
     strategy:
       matrix:
-        #os: [windows-latest, macos-latest, ubuntu-latest]
+        #os: [windows-latest, macos-13, ubuntu-latest]
         os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -42,12 +42,24 @@ jobs:
           name: updated-version-data
           path: RandomizerCore
       - run: mkdir build
-      - run: python setup.py build
-      - run: python build.py
+      - run: |
+              if [ "$RUNNER_OS" == "macOS" ]; then
+                  python setup.py bdist_dmg
+              else
+                  python setup.py build
+              fi
+        shell: bash
+      - run: |
+              if [ "$RUNNER_OS" != "macOS" ]; then
+                  python build.py
+              fi
+        shell: bash
       - uses: actions/upload-artifact@v4
         with:
           name: release-build-${{ matrix.os }}
-          path: build/*.zip
+          path: |
+            build/*.zip
+            build/*.dmg
 
 #  dev-release:
 #    needs: build
@@ -72,6 +84,7 @@ jobs:
     if: success() && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: build
@@ -83,7 +96,11 @@ jobs:
           prerelease: false
           automatic_release_tag: "${{ github.ref_name }}"
           title: "Release ${{ github.ref_name }}"
-          files: "build/*.zip"
+          files: |
+            build/*.zip
+            build/*.dmg
+            LICENSE.txt
+            README.md
 
 
   # Artifact Cleanup (to avoid too much storage)
