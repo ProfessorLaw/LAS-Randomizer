@@ -3,7 +3,7 @@ from RandomizerCore.Paths.randomizer_paths import DATA_PATH, RESOURCE_PATH, SETT
 import yaml
 import os
 
-VERSION = 0.4
+VERSION = 0.41
 
 # Using this to add extra data to the window title to precise what version they are using
 EXTRA_TITLE_DATA = os.getenv('EXTRA_TITLE_DATA', '')
