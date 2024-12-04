@@ -11,15 +11,25 @@ build_exe_options = {"packages": ["os"],
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
+    build_icon = "RandomizerUI/Resources/icon.ico"
 
-build_icon = "RandomizerUI/Resources/icon.ico"
-if sys.platform == "darwin": # mac
-    build_icon = "RandomizerUI/Resources/icon.icns"
-
-setup(
+    setup(
     name = "Links Awakening Switch Randomizer",
     version = f"{VERSION}",
     description = "A randomizer for The Legend of Zelda: Link's Awakening remake!",
     options = {"build_exe": build_exe_options},
     executables = [Executable("randomizer.py", base=base, target_name="Links Awakening Switch Randomizer", icon=build_icon)]
 )
+
+elif sys.platform == "darwin":
+    from py2app import setup as macsetup
+    build_icon = "RandomizerUI/Resources/icon.icns"
+    APP = ['randomizer.py']
+    DATA_FILES = ['RandomizerUI/Resources/icon.icns']
+    OPTIONS = {'argv_emulation': True}
+    macsetup(
+        app=APP,
+        data_files=DATA_FILES,
+        options={'py2app': OPTIONS},
+        setup_requires=['py2app']
+    )
